@@ -24,7 +24,52 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
+    const database = client.db("brandDB");
+    const productCollections = database.collection("products");
 
+
+    app.get('/Lamborghini', async(req, res)=>{
+      const query = { brandName : "Lamborghini" };
+      const result = await productCollections.find(query).toArray();
+      res.send(result)
+    })
+
+    app.get('/BMD', async(req, res)=>{
+      const query = { brandName : "BMD" };
+      const result = await productCollections.find(query).toArray();
+      res.send(result)
+    })
+    app.get('/Toyota', async(req, res)=>{
+      const query = { brandName : "Toyota" };
+      const result = await productCollections.find(query).toArray();
+      res.send(result)
+    })
+
+    app.get('/AUDI', async(req, res)=>{
+      const query = { brandName : "AUDI" };
+      const result = await productCollections.find(query).toArray();
+      res.send(result)
+    })
+    app.get('/Mercedes-Benz', async(req, res)=>{
+      const query = { brandName : "Mercedes-Benz" };
+      const result = await productCollections.find(query).toArray();
+      res.send(result)
+    })
+
+    app.get('/Nissan', async(req, res)=>{
+      const query = { brandName : "Nissan" };
+      const result = await productCollections.find(query).toArray();
+      res.send(result)
+    })
+
+
+
+
+    app.post('/allproducts', async(req, res)=>{
+      const product = req.body
+      const result = await productCollections.insertOne(product);
+      res.send(result)
+    })
 
     
     // Send a ping to confirm a successful connection
@@ -32,7 +77,7 @@ async function run() {
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
-    await client.close();
+    // await client.close();
   }
 }
 run().catch(console.dir);
