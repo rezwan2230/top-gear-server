@@ -1,13 +1,12 @@
 const express = require('express')
 const cors = require('cors')
 require('dotenv').config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express()
 const port = process.env.PORT || 5000
 
 app.use(cors())
 app.use(express.json())
-
 
 const uri = `mongodb+srv://${process.env.CAR_USER}:${process.env.CAR_PASSWORD}@cluster0.nvdjbig.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -26,6 +25,7 @@ async function run() {
 
     const database = client.db("brandDB");
     const productCollections = database.collection("products");
+    const mycartCollections = database.collection("mycartproducts");
 
 
     app.get('/Lamborghini', async(req, res)=>{
@@ -63,7 +63,24 @@ async function run() {
     })
 
 
+    app.get('/details/:id', async(req, res)=>{
+      const id = req.params.id
+      const query = { _id : new ObjectId(id) };
+      const result = await productCollections?.findOne(query);
+      res.send(result)
+    })
 
+    app.get('/mycart/products', async(req, res)=>{
+      const cursor = mycartCollections.find();
+      const result = await cursor.toArray()
+      res.send(result)
+    })
+
+    app.post('/mycart', async(req, res)=>{
+      const myCartProduct = req.body
+      const result = await mycartCollections.insertOne(myCartProduct);
+      res.send(result)
+    })
 
     app.post('/allproducts', async(req, res)=>{
       const product = req.body
@@ -71,7 +88,17 @@ async function run() {
       res.send(result)
     })
 
-    
+    app.delete('/mycart/:id', async(req, res)=>{
+      const id = req.params.id
+      const query = { _id: new ObjectId(id) };
+      const result = await mycartCollections.deleteOne(query);
+      res.send(result)
+    })
+
+
+
+
+   
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
@@ -81,13 +108,6 @@ async function run() {
   }
 }
 run().catch(console.dir);
-
-
-
-
-
-
-
 
 
 
