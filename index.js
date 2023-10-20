@@ -92,7 +92,6 @@ async function run() {
     app.put('/details/:id', async(req, res)=>{
       const id = req.params.id
       const updatedProduct = req.body
-      console.log(updatedProduct);
       const filter = {_id : new ObjectId(id)}
       const options = { upsert: true };
       const updateDoc = {
@@ -116,9 +115,6 @@ async function run() {
       const result = await mycartCollections.deleteOne(query);
       res.send(result)
     })
-
-
-
 
    
     // Send a ping to confirm a successful connection
